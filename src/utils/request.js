@@ -1,5 +1,5 @@
 import axios from 'axios'
-import Massage, { Message } from 'element-ui'
+import { Message } from 'element-ui'
 
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API,
@@ -15,7 +15,7 @@ service.interceptors.response.use(response => {
     return Promise.reject(new Error(message))
   }
 }, error => {
-  Massage.error(error.message)
+  Message.error(error.message)
   return Promise.reject(error)
 })// 响应拦截器
 
