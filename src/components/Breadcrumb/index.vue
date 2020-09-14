@@ -1,12 +1,8 @@
 <template>
-  <el-breadcrumb class="app-breadcrumb" separator="/">
-    <transition-group name="breadcrumb">
-      <el-breadcrumb-item v-for="(item,index) in levelList" :key="item.path">
-        <span v-if="item.redirect==='noRedirect'||index==levelList.length-1" class="no-redirect">{{ item.meta.title }}</span>
-        <a v-else @click.prevent="handleLink(item)">{{ item.meta.title }}</a>
-      </el-breadcrumb-item>
-    </transition-group>
-  </el-breadcrumb>
+  <div class="app-breadcrumb">
+    江苏传智播客教育科技股份有限公司
+    <span class="breadBtn">体验版</span>
+  </div>
 </template>
 
 <script>
@@ -15,7 +11,7 @@ import pathToRegexp from 'path-to-regexp'
 export default {
   data() {
     return {
-      levelList: null
+
     }
   },
   watch: {
@@ -74,5 +70,31 @@ export default {
     color: #97a8be;
     cursor: text;
   }
+}
+.navbar {
+    background-image: -webkit-linear-gradient(left, #3d6df8, #5b8cff);
+}
+.app-breadcrumb {
+  display: inline-block;
+  font-size: 18px;
+  line-height: 50px;
+  margin-left: 10px;
+  color: #ffffff;
+  cursor: text;
+  .breadBtn {
+    background: #84a9fe;
+    font-size: 14px;
+    padding: 0 10px;
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 10px;
+    margin-left: 15px;
+  }
+}
+.tree-card {
+  // padding: 30px  140px;
+  width: 300px;
+  font-size:14px;
 }
 </style>
