@@ -41,6 +41,12 @@ const actions = {
     const img = await getUserDetailById(reslute.userId)
     context.commit('getUserInfo', { ...reslute, ...img })
     return reslute
+  },
+  // 退出登录
+  async lgout(context) {
+    // 清除token与用户资料
+    context.commit('removesToken')
+    context.commit('removeUserInfo')
   }
 }
 
