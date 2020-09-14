@@ -1,4 +1,4 @@
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, removeToken, setTimeStamp } from '@/utils/auth'
 
 import { getUserInfo, login, getUserDetailById } from '@/api/user'
 const state = {
@@ -34,6 +34,8 @@ const actions = {
     const reslute = await login(data1)
     // 登录成功，将token值赋予vuex
     context.commit('getsToken', reslute)
+    // 设置时间戳
+    setTimeStamp()
   },
   // 获取用户资料
   async getUserInfo(context) {
