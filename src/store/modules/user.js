@@ -41,8 +41,9 @@ const actions = {
   async getUserInfo(context) {
     const reslute = await getUserInfo()
     const img = await getUserDetailById(reslute.userId)
-    context.commit('getUserInfo', { ...reslute, ...img })
-    return reslute
+    const baseResult = { ...reslute, ...img }
+    context.commit('getUserInfo', baseResult)
+    return baseResult
   },
   // 退出登录
   async lgout(context) {
