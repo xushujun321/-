@@ -115,3 +115,22 @@ export function param2Obj(url) {
   })
   return obj
 }
+
+// 封装将数据转换为树形
+export function transListToTreeData(list, vaildate) {
+  // 定义新数组，用来装亲儿子
+  const arr = []
+  list && list.forEach(item => {
+  // 判断是否是根目录
+    if (item.pid === vaildate) {
+    // 查找亲儿子
+      const child = transListToTreeData(list, item.id)
+      // 如果存在，加添加到内容区
+      if (child.length) {
+        item.children = child
+      }
+      arr.push(item)
+    }
+  })
+  return arr
+}
