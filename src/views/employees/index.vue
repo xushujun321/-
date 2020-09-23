@@ -76,7 +76,7 @@ export default {
       list: [], // 接数据的
       page: {
         page: 1, // 当前页码
-        size: 10,
+        size: 5,
         total: 0 // 总数
       },
       showDialog: false
