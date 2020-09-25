@@ -5,7 +5,7 @@
         <span slot="before">共166条记录</span>
         <template slot="after">
           <el-button size="small" type="warning" @click="$router.push('/import?type=user')">导入</el-button>
-          <el-button size="small" type="danger">导出</el-button>
+          <el-button size="small" type="danger" @click="exportData">导出</el-button>
           <el-button size="small" type="primary" @click="add">新增员工</el-button>
         </template>
       </page-tools>
@@ -37,7 +37,7 @@
           </el-table-column>
           <el-table-column align="center" header-align="center" label="操作" sortable="" fixed="right" width="280">
             <template slot-scope="{row}">
-              <el-button type="text" size="small">查看</el-button>
+              <el-button type="text" size="small" @click="$router.push(`/employees/detail/${row.id}`)">查看</el-button>
               <el-button type="text" size="small">转正</el-button>
               <el-button type="text" size="small">调岗</el-button>
               <el-button type="text" size="small">离职</el-button>
@@ -65,6 +65,7 @@
 <script>
 import { getEmployeeList, delEmployee } from '@/api/employees'
 import EmployeeEnum from '@/api/constant/employees'
+import { formatDate } from '@/filters'
 import AddDemployee from './components/add-employee'
 export default {
   components: {
@@ -118,6 +119,47 @@ export default {
     // 新增按钮
     add() {
       this.showDialog = true
+    },
+    // 导出员工数据
+    exportData() {
+      // 表头对应关系
+      const headers = {
+        '手机号': 'mobile',
+        '姓名': 'username',
+        '入职日期': 'timeOfEntry',
+        '聘用形式': 'formOfEmployment',
+        '转正日期': 'correctionTime',
+        '工号': 'workNumber',
+        '部门': 'departmentName'
+      }
+      const data = this.formatJson(headers, this.list) // 处理数据，list是获取的列表数据
+      // 动态引入excel插件
+      import('@/vendor/Export2Excel').then(excel => {
+        excel.export_json_to_excel({
+          header: Object.keys(headers), // 导出数据的表头
+          data: data,
+          filename: '员工名单',
+          autoWidth: true,
+          bookType: 'xlsx'
+        })
+        this.$message.success('导出报表成功！')
+      })
+    },
+    // 处理json数据 返回的是一个二维数组
+    formatJson(headers, data) {
+      return data.map(item => {
+        return Object.keys(headers).map(key => {
+          if (headers[key] === 'correctionTime' || headers[key] === 'timeOfEntry') {
+            // 处理时间
+            return formatDate(item[headers[key]])
+          } else if (headers[key] === 'formOfEmployment') {
+            // 应聘形式
+            var en = EmployeeEnum.hireType.find(obj => obj.id === item[headers[key]])
+            return en.value || '未知'
+          }
+          return item[headers[key]]
+        })
+      })
     }
   }
 }
