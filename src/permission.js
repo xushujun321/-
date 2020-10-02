@@ -12,9 +12,13 @@ router.beforeEach(async(to, from, next) => {
       next('/')
     } else {
       if (!store.state.user.userInfo.userId) {
-        await store.dispatch('user/getUserInfo')
+        const { roles } = await store.dispatch('user/getUserInfo')
+        const routes = await store.dispatch('permission/filterRoutes', roles.menus)
+        router.addRoutes([...routes, { path: '*', redirect: '/404', hidden: true }]) // 添加到路由表
+        next(to.path)
+      } else {
+        next()
       }
-      next()
     }
     NProgress.done()
   } else {

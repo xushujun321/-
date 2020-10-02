@@ -14,6 +14,8 @@ import router from './router'
 
 import '@/icons' // icon
 import '@/permission' // permission control
+import CheckPermission from '@/mixin/checkPermission'
+Vue.mixin(CheckPermission)// 全局混入，所有组件都会混入一个对象
 
 // 全局注册指令
 import * as Directives from '@/directives'

@@ -42,7 +42,7 @@
               <el-button type="text" size="small">调岗</el-button>
               <el-button type="text" size="small">离职</el-button>
               <el-button type="text" size="small" @click="role(row.id)">角色</el-button>
-              <el-button type="text" size="small" @click="deleteEmployee(row.id)">删除</el-button>
+              <el-button :disabled="!checkPermission('POINT-USER-UPDATE')" type="text" size="small" @click="deleteEmployee(row.id)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
