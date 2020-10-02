@@ -41,7 +41,7 @@
               <el-button type="text" size="small">转正</el-button>
               <el-button type="text" size="small">调岗</el-button>
               <el-button type="text" size="small">离职</el-button>
-              <el-button type="text" size="small">角色</el-button>
+              <el-button type="text" size="small" @click="role(row.id)">角色</el-button>
               <el-button type="text" size="small" @click="deleteEmployee(row.id)">删除</el-button>
             </template>
           </el-table-column>
@@ -58,6 +58,7 @@
         </el-row>
       </el-card>
       <AddDemployee :show-dialog.sync="showDialog" />
+      <assign ref="role" :show-dialog.sync="showDialog2" :user-id="userId" />
     </div>
   </div>
 </template>
@@ -67,9 +68,12 @@ import { getEmployeeList, delEmployee } from '@/api/employees'
 import EmployeeEnum from '@/api/constant/employees'
 import { formatDate } from '@/filters'
 import AddDemployee from './components/add-employee'
+// 引进角色弹层
+import assign from './components/assign-role'
 export default {
   components: {
-    AddDemployee
+    AddDemployee,
+    assign
   },
   data() {
     return {
@@ -80,7 +84,10 @@ export default {
         size: 5,
         total: 0 // 总数
       },
-      showDialog: false
+      showDialog: false,
+      // 控制角色弹层
+      showDialog2: false,
+      userId: null
     }
   },
   created() {
@@ -160,6 +167,14 @@ export default {
           return item[headers[key]]
         })
       })
+    },
+    // 角色
+    async role(id) {
+      // 获取角色详情
+      await this.$refs.role.getUserDetailById(id)
+      // 打开弹层
+      this.showDialog2 = true
+      this.userId = id
     }
   }
 }
