@@ -60,3 +60,4 @@ export function addRole(data) {
     method: 'post'
   })
 }
+

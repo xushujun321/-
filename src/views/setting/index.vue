@@ -40,7 +40,7 @@
                   fixed="right"
                 >
                   <template slot-scope="{ row }">
-                    <el-button size="small" type="success">分配权限</el-button>
+                    <el-button size="small" type="success" @click="getPermissionList(row.id)">分配权限</el-button>
                     <el-button size="small" type="primary" @click="getRoleDetail(row.id)">编辑</el-button>
                     <el-button size="small" type="danger" @click="deleteRole(row.id)">删除</el-button>
                   </template>
@@ -86,7 +86,7 @@
         </el-tabs>
       </el-card>
       <!-- 新增角色与编辑角色的弹层:title="`${txt}角色`" -->
-      <el-dialog title="编辑角色" :visible="showDialog" @close="btnCancon">
+      <el-dialog :title="`${txt}角色`" :visible="showDialog" @close="btnCancon">
         <el-row>
           <el-form ref="newRole" label-width="120px" :rules="rules" :model="newRole">
             <el-form-item label="角色名称" prop="name">
@@ -102,6 +102,26 @@
           <el-button size="small" @click="btnCancon">取消</el-button>
         </el-row>
       </el-dialog>
+      <!-- 为角色分配权限弹框 -->
+      <el-dialog :title="`为${permData.name}分配权限`" :visible="showPermDialog" @close="btnPermCancel">
+        <!-- 放置一个组件 来显示 权限的树形结构 el-tree  el-table -->
+        <el-tree
+          ref="permTree"
+          :data="permData"
+          :props="defaultProps"
+          default-expand-all=""
+          show-checkbox
+          node-key="id"
+          :default-checked-keys="selectCheck"
+          :check-strictly="true"
+        />
+        <el-row slot="footer" type="flex" justify="center">
+          <el-col :span="6">
+            <el-button size="small" @click="btnPermCancel">取消</el-button>
+            <el-button size="small" type="primary" @click="btnPermOK">确定</el-button>
+          </el-col>
+        </el-row>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -110,6 +130,9 @@
 import { getRoleList, getCompanyInfo, deleteRole, getRoleDetail, updateRole, addRole } from '@/api/setting'
 // 在vuex的时候将companyId存储在getters
 import { mapGetters } from 'vuex'
+import { transListToTreeData } from '@/utils'
+// 获取所有权限
+import { getPermissionList, assignPerm } from '@/api/permission'
 export default {
   data() {
     return {
@@ -125,14 +148,21 @@ export default {
       newRole: {}, // 弹片角色数据
       rules: {
         name: [{ required: true, message: '角色名称必填' }]
-      } // 校验规则
+      }, // 校验规则
+      showPermDialog: false, // 控制分配权限弹层的显示后者隐藏
+      defaultProps: {
+        label: 'name'
+      },
+      permData: [], // 专门用来接收权限数据 树形数据
+      selectCheck: [], // 定义一个数组来接收 已经选中的节点
+      roleId: null // 用来记录分配角色的id
     }
   },
   computed: {
-    ...mapGetters(['companyId'])
-    // txt() {
-    //   return
-    // }
+    ...mapGetters(['companyId']),
+    txt() {
+      return this.newRole.id ? '编辑' : '添加'
+    }
   },
   created() {
     this.getRoleList()// 获取角色列表
@@ -179,7 +209,7 @@ export default {
       this.showDialog = false
       this.getRoleList()
     },
-    // 获取角色详情
+    // 编辑,获取角色详情
     async getRoleDetail(id) {
       this.newRole = await getRoleDetail(id)
       this.showDialog = true
@@ -202,6 +232,29 @@ export default {
           // this.getRoleList()
         }
       })
+    },
+    // 点击分配权限
+    async getPermissionList(id) {
+      this.roleId = id
+      // 获取所有权限
+      this.permData = transListToTreeData(await getPermissionList(), '0')
+      // 获取角色的id
+      const { permIds } = await getRoleDetail(id) // permIds就是角色所拥有的权限的点
+      this.selectCheck = permIds
+      this.showPermDialog = true
+    },
+    // 分配权限的取消按钮
+    btnPermCancel() {
+      // 清除数据
+      this.permData = []
+      // 关闭弹层
+      this.showPermDialog = false
+    },
+    // 分配权限的确定按钮
+    async btnPermOK() {
+      await assignPerm({ id: this.roleId, permIds: this.$refs.permTree.getCheckedKeys() })
+      this.$message.success('分配成功')
+      this.showPermDialog = false
     }
   }
 
