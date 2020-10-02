@@ -154,6 +154,17 @@
         <el-button @click="$router.back()">返回</el-button>
       </el-form-item>
     </el-form>
+    <el-row type="flex" justify="end">
+      <el-tooltip content="打印岗位信息">
+        <router-link :to="`/employees/print/${userId}?type=job`">
+
+          <i
+            class="el-icon-printer"
+          />
+        </router-link>
+
+      </el-tooltip>
+    </el-row>
   </div>
 
 </template>
@@ -217,3 +228,14 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+@media print {
+ .sidebar-container,.tags-view-container, .navbar {
+     display:  none
+ }
+#app .main-container {
+     margin-left: 0
+ }
+}
+</style>
