@@ -15,6 +15,7 @@ import attendancesRouter from './modules/attendances'
 import salarysRouter from './modules/salarys'
 import settingRouter from './modules/setting'
 import socialRouter from './modules/social'
+import user from './modules/user'
 
 // 动态路由
 export const asyncRoutes = [
@@ -34,6 +35,7 @@ export const asyncRoutes = [
  * all roles can be accessed
  */
 export const constantRoutes = [
+  user,
   {
     path: '/login',
     component: () => import('@/views/login/index'),
