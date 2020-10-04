@@ -7,6 +7,8 @@
     <div class="right-menu">
       <!-- 放置全屏组件 -->
       <screen-full class="right-menu-item" />
+      <!-- 放置动态主题插件 -->
+      <theme-picker class="right-menu-item" />
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img v-imageerror="defaultImg" :src="staffPhoto" class="user-avatar">
