@@ -5,6 +5,7 @@ import ImageUpload from './ImageUpload'
 import ScreenFull from './ScreenFull'
 import ThemePicker from './ThemePicker'
 import lang from './lang'
+import TagsView from './TagsView'
 
 export default {
   install(Vue) {
@@ -15,5 +16,6 @@ export default {
     Vue.component('ScreenFull', ScreenFull) // 注册全屏组件
     Vue.component('ThemePicker', ThemePicker)// 注册动态主题
     Vue.component('lang', lang)// 注册多语言包
+    Vue.component('TagsView', TagsView)// tab栏标签栏的注册
   }
 }
